@@ -5,10 +5,6 @@ int main(int argc, char* argv[])
 {
     CPE pe;
 
-    std::cout << "hello pe" << std::endl;
-
-    // if (!pe.OpenFile("x96dbg.exe"))
-    // if (!pe.OpenFile("pe.exe"))
     if (!pe.OpenFile(argv[1]))
     {
         std::cout << "OpenFile Error" << std::endl;
