@@ -1,22 +1,34 @@
-# parse_pe
+# PE 文件格式的解析
 
-环境：
+## 一、环境
+### 1.环境：
 Windows + MingGW
 
 
-环境变量：
+### 2.环境变量：
 ```
 C:\Program Files\mingw\mingw64\bin
 ```
 这里替换成你的环境
 
 
-编译方法:
+## 二、编译运行
+### 1.编译方法:
 ```
 g++ -g -O0 .\main.cpp .\common.cpp .\pe.cpp .\show.cpp -o pe.exe -limagehlp
 ```
+### 2.运行：
+```
+pe.exe pe.exe
+```
 
-DOS 头：
+## 三、文件结构
+1. main.cpp 主程序
+2. pe.h pe.cpp 定位 PE
+3. show.h show.cpp 解析和现实 PE
+
+## 四、已经解析的部分
+### 1.DOS 头：
 ```
 IMAGE_DOS_HEADER:
         e_magic:5a4d
@@ -24,7 +36,7 @@ IMAGE_DOS_HEADER:
 ```
 
 
-NT 头：
+### 2.NT 头：
 ```
 IMAGE_NT_HEADERS
         000: Signature:4550
@@ -68,7 +80,8 @@ IMAGE_OPTIONAL_HEADER
         084: NumberOfRvaAndSizes:10
 ```
 
-节表：这里需要处理 / 开头的节，暂时没有处理
+### 3.节表：
+这里需要处理 / 开头的节，暂时没有处理
 ```
 IMAGE_SECTION_HEADER
         Name:.text
@@ -145,7 +158,7 @@ IMAGE_SECTION_HEADER
                 Characteristics:42000040
 ```
 
-导入表：
+### 4.导入表：
 ```
 IMAGE_IMPORT_DESCRIPTOR
         libgcc_s_seh-1.dll
