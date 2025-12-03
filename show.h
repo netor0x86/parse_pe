@@ -17,6 +17,7 @@ public:
     void ShowOptHdr();
     void ShowNtHdrs();
     void ShowSection();
+    void ShowImportDesc();
 
 private:
     CPE& m_pe;

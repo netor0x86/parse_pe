@@ -355,3 +355,56 @@ void CShowPe::ShowNtHdrs()
     ShowOptHdr();
     ShowSection();
 }
+
+void CShowPe::ShowImportDesc()
+{
+    std::cout << "IMAGE_IMPORT_DESCRIPTOR" << std::endl;
+
+    PIMAGE_IMPORT_DESCRIPTOR pImportDesc = m_pe.GetImportDesc();
+
+    while (pImportDesc)
+    {
+        std::cout << "\t" << m_pe.RvaToFa(pImportDesc->Name) + (byte *)m_pe.GetBase() << std::endl;
+
+        if (m_pe.IsX64())
+        {
+            PIMAGE_THUNK_DATA64 pThunk = (PIMAGE_THUNK_DATA64)(m_pe.RvaToFa(pImportDesc->OriginalFirstThunk) + (byte *)m_pe.GetBase());
+
+            while (pThunk->u1.Ordinal)
+            {
+                if (!IMAGE_SNAP_BY_ORDINAL64(pThunk->u1.Ordinal))
+                {
+                    PIMAGE_IMPORT_BY_NAME pImportByName = (PIMAGE_IMPORT_BY_NAME)(m_pe.RvaToFa(pThunk->u1.Function) + (byte *)m_pe.GetBase());
+                    std::cout << "\t\t" << pImportByName->Hint << " " << pImportByName->Name << std::endl;
+                }
+                else
+                {
+                    std::cout << "\t\t" << IMAGE_ORDINAL64(pThunk->u1.Ordinal) << std::endl;
+                }
+
+                pThunk ++;
+            }
+        }
+        else
+        {
+            PIMAGE_THUNK_DATA32 pThunk = (PIMAGE_THUNK_DATA32)(m_pe.RvaToFa(pImportDesc->OriginalFirstThunk) + (byte *)m_pe.GetBase());
+
+            while (pThunk->u1.Ordinal)
+            {
+                if (!IMAGE_SNAP_BY_ORDINAL32(pThunk->u1.Ordinal))
+                {
+                    PIMAGE_IMPORT_BY_NAME pImportByName = (PIMAGE_IMPORT_BY_NAME)(m_pe.RvaToFa(pThunk->u1.Function) + (byte *)m_pe.GetBase());
+                    std::cout << "\t\t" << pImportByName->Hint << " " << pImportByName->Name << std::endl;
+                }
+                else
+                {
+                    std::cout << "\t\t" << IMAGE_ORDINAL32(pThunk->u1.Ordinal) << std::endl;
+                }
+
+                pThunk ++;
+            } 
+        }
+        
+        pImportDesc ++;
+    }    
+}

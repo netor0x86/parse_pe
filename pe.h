@@ -2,6 +2,9 @@
 
 #include <windows.h>
 #include <string>
+#include <dbghelp.h>
+
+#pragma comment(lib, "imagehlp.lib")
 
 class CNtHdr
 {
@@ -30,6 +33,14 @@ public:
     PIMAGE_DOS_HEADER GetDosHdr();
     CNtHdr GetNtHdr();
     PIMAGE_SECTION_HEADER GetSectionHeader();
+    PIMAGE_IMPORT_DESCRIPTOR GetImportDesc();
+
+public:
+    DWORD RvaToFa(DWORD dwRva);
+    DWORD FaToRva(DWORD dwFa);
+
+public:
+    LPVOID GetBase();
 
 private:
     std::string m_StrFileName;

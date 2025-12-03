@@ -13,6 +13,47 @@ CPE::~CPE()
     CloseFile();
 }
 
+PIMAGE_IMPORT_DESCRIPTOR CPE::GetImportDesc()
+{
+    if (m_IsX64)
+    {
+        return (PIMAGE_IMPORT_DESCRIPTOR)(RvaToFa(m_pImgOptHdr64->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress) + (byte *)m_lpBase);
+    }
+    else
+    {
+        return (PIMAGE_IMPORT_DESCRIPTOR)(RvaToFa(m_pImgOptHdr32->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress) + (byte *)m_lpBase);
+    }
+}
+
+LPVOID CPE::GetBase()
+{
+    return m_lpBase;
+}
+
+DWORD CPE::RvaToFa(DWORD dwRva)
+{
+    PIMAGE_SECTION_HEADER pSec = NULL;
+    PIMAGE_NT_HEADERS pNtHdr = NULL;
+
+    if (m_IsX64)
+    {
+        pNtHdr = (PIMAGE_NT_HEADERS)m_pImgNtHdr64;
+    }
+    else
+    {
+        pNtHdr = (PIMAGE_NT_HEADERS)m_pImgNtHdr32;
+    }
+
+    pSec = ImageRvaToSection(pNtHdr, m_lpBase, dwRva);
+
+    return dwRva - pSec->VirtualAddress + pSec->PointerToRawData;
+}
+
+DWORD CPE::FaToRva(DWORD dwFa)
+{
+    return 0;
+}
+
 PIMAGE_DOS_HEADER CPE::GetDosHdr()
 {
     return m_pImgDosHdr;

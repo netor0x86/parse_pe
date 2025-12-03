@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
     CShowPe show(pe);
     show.ShowDosHdr();
     show.ShowNtHdrs();
+    show.ShowImportDesc();
 
     pe.CloseFile();
     return 0;
