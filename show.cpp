@@ -348,11 +348,66 @@ void CShowPe::ShowSection()
     std::cout << std::dec << std::setfill(' ');
 }
 
+void CShowPe::ShowDataDir()
+{
+    PIMAGE_DATA_DIRECTORY pDataDir = NULL;
+    DWORD NumberOfRvaAndSizes = 16;
+
+    if (m_pe.IsX64())
+    {
+        pDataDir = m_pe.GetNtHdr().NtHdr.pImgNtHdr64->OptionalHeader.DataDirectory;
+        NumberOfRvaAndSizes = m_pe.GetNtHdr().NtHdr.pImgNtHdr64->OptionalHeader.NumberOfRvaAndSizes;
+    }
+    else
+    {
+        pDataDir = m_pe.GetNtHdr().NtHdr.pImgNtHdr32->OptionalHeader.DataDirectory;
+        NumberOfRvaAndSizes = m_pe.GetNtHdr().NtHdr.pImgNtHdr32->OptionalHeader.NumberOfRvaAndSizes;
+    }
+
+    std::cout << "IMAGE_DATA_DIRECTORY" << std::endl;
+    std::cout << "\t" << "NumberOfRvaAndSizes:" << NumberOfRvaAndSizes << std::endl;
+    std::cout << std::hex << std::setfill('0');
+
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_EXPORT:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress << ":" 
+                                                         << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_EXPORT].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_IMPORT:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress << ":" 
+                                                         << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_IMPORT].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_RESOURCE:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress << ":" 
+                                                           << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_RESOURCE].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_EXCEPTION:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress << ":" 
+                                                            << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_EXCEPTION].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_SECURITY:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_SECURITY].VirtualAddress << ":" 
+                                                           << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_SECURITY].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_BASERELOC:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress << ":" 
+                                                            << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_BASERELOC].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_DEBUG:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress << ":" 
+                                                        << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_DEBUG].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_ARCHITECTURE:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_ARCHITECTURE].VirtualAddress << ":" 
+                                                               << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_ARCHITECTURE].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_GLOBALPTR:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_GLOBALPTR].VirtualAddress << ":" 
+                                                            << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_GLOBALPTR].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_TLS:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress << ":" 
+                                                      << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_TLS].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG].VirtualAddress << ":" 
+                                                              << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT].VirtualAddress << ":" 
+                                                               << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_IAT:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_IAT].VirtualAddress << ":" 
+                                                      << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_IAT].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT].VirtualAddress << ":" 
+                                                               << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT].Size << std::endl;
+    std::cout << "\t" << "IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR:" << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR].VirtualAddress << ":" 
+                                                                 << std::setw(8) << pDataDir[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR].Size << std::endl;
+    
+    std::cout << std::dec << std::setfill(' ');
+}
+
 void CShowPe::ShowNtHdrs()
 {
     ShowPeSignature();
     ShowFileHdr();
     ShowOptHdr();
+    ShowDataDir();
     ShowSection();
 }
 

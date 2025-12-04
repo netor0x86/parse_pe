@@ -16,6 +16,7 @@ public:
     void ShowOptHdr64();
     void ShowOptHdr();
     void ShowNtHdrs();
+    void ShowDataDir();
     void ShowSection();
     void ShowImportDesc();
 
