@@ -13,6 +13,18 @@ CPE::~CPE()
     CloseFile();
 }
 
+PIMAGE_BASE_RELOCATION CPE::GetBaseRelocation()
+{
+    if (m_IsX64)
+    {
+        return (PIMAGE_BASE_RELOCATION)(RvaToFa(m_pImgOptHdr64->DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress) + (byte *)m_lpBase);
+    }
+    else
+    {
+        return (PIMAGE_BASE_RELOCATION)(RvaToFa(m_pImgOptHdr32->DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress) + (byte *)m_lpBase);
+    }
+}
+
 PIMAGE_IMPORT_DESCRIPTOR CPE::GetImportDesc()
 {
     if (m_IsX64)

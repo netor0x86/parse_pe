@@ -411,13 +411,47 @@ void CShowPe::ShowNtHdrs()
     ShowSection();
 }
 
+void CShowPe::ShowBaseRelocation()
+{
+    std::cout << "IMAGE_BASE_RELOCATION" << std::endl;
+
+    PIMAGE_BASE_RELOCATION pBaseReloc = m_pe.GetBaseRelocation();
+
+    if (pBaseReloc == m_pe.GetBase())
+    {
+        std::cout << "没有重定位表" << std::endl;
+    }
+
+    std::cout << std::hex << std::setfill('0');
+
+    int iCnt = 0;
+    while (pBaseReloc->VirtualAddress != 0 && pBaseReloc->SizeOfBlock != 0)
+    {
+        int iNum = (pBaseReloc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD);
+        std::cout << iCnt << ":VirtualAddress:" << pBaseReloc->VirtualAddress << " SizeOfBlock:" << pBaseReloc->SizeOfBlock << " Number:" << iNum << std::endl;
+
+        PTYPEOFFSET pTypeOffset = (PTYPEOFFSET)(pBaseReloc + 1);
+
+        for (int i = 0; i < iNum; i ++)
+        {
+            std::cout << "\t" << pTypeOffset[i].Type << ":" << std::setw(8) << pBaseReloc->VirtualAddress + pTypeOffset[i].offset << std::endl;
+        }
+
+        pBaseReloc = (PIMAGE_BASE_RELOCATION)((byte *)pBaseReloc + pBaseReloc->SizeOfBlock);
+
+        iCnt ++;
+    }
+
+    std::cout << std::dec << std::setfill(' ');
+}
+
 void CShowPe::ShowImportDesc()
 {
     std::cout << "IMAGE_IMPORT_DESCRIPTOR" << std::endl;
 
     PIMAGE_IMPORT_DESCRIPTOR pImportDesc = m_pe.GetImportDesc();
 
-    while (pImportDesc)
+    while (pImportDesc->OriginalFirstThunk)
     {
         std::cout << "\t" << m_pe.RvaToFa(pImportDesc->Name) + (byte *)m_pe.GetBase() << std::endl;
 

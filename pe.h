@@ -16,6 +16,12 @@ public:
     } NtHdr;
 };
 
+typedef struct _TYPEOFFSET
+{
+    WORD offset : 12;      // 偏移值
+    WORD Type   : 4;       // 重定位属性(方式)
+} TYPEOFFSET, *PTYPEOFFSET;
+
 class CPE
 {
 public:
@@ -34,6 +40,7 @@ public:
     CNtHdr GetNtHdr();
     PIMAGE_SECTION_HEADER GetSectionHeader();
     PIMAGE_IMPORT_DESCRIPTOR GetImportDesc();
+    PIMAGE_BASE_RELOCATION GetBaseRelocation();
 
 public:
     DWORD RvaToFa(DWORD dwRva);

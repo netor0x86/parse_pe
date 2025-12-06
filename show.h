@@ -19,7 +19,7 @@ public:
     void ShowDataDir();
     void ShowSection();
     void ShowImportDesc();
-
+    void ShowBaseRelocation();
 private:
     CPE& m_pe;
 };

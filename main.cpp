@@ -6,6 +6,8 @@ int main(int argc, char* argv[])
     CPE pe;
 
     if (!pe.OpenFile(argv[1]))
+    // if (!pe.OpenFile("pe.exe"))
+    // if (!pe.OpenFile("x96dbg.exe"))
     {
         std::cout << "OpenFile Error" << std::endl;
         pe.CloseFile();
@@ -30,6 +32,7 @@ int main(int argc, char* argv[])
     show.ShowDosHdr();
     show.ShowNtHdrs();
     show.ShowImportDesc();
+    show.ShowBaseRelocation();
 
     pe.CloseFile();
     return 0;
