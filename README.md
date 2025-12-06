@@ -303,3 +303,30 @@ IMAGE_IMPORT_DESCRIPTOR
                 1335 strncmp
                 1373 vfprintf
 ```
+
+
+### 6.重定位表
+
+```
+0:VirtualAddress:9000 SizeOfBlock:1c Number:a
+        a:00009010
+        a:00009070
+        a:00009080
+        a:00009090
+        a:000090a0
+        a:000090b0
+        a:000090b8
+        a:000090c0
+        a:000090d0
+        0:00009000
+1:VirtualAddress:a000 SizeOfBlock:50 Number:24
+        a:0000a9a0
+        a:0000a9a8
+        a:0000a9b0
+        a:0000a9b8
+        a:0000a9c8
+        a:0000ac80
+        a:0000ac90
+        a:0000aca0
+        a:0000acb0
+```
