@@ -330,3 +330,32 @@ IMAGE_IMPORT_DESCRIPTOR
         a:0000aca0
         a:0000acb0
 ```
+
+
+### 7.导出表
+
+序号导出和名字导出都解析了
+遍历的时候用了 unordered_map 库
+
+```
+IMAGE_EXPORT_DIRECTORY
+        Name:GDI32.dll
+        Base:1000
+        NumberOfFunctions:1001
+        NumberOfNames:973
+3e8 00008000
+3e9 00008020
+3ea 00008040
+3eb 00007f80
+3ec 00004dd0
+3ed 00008060
+3ee 00007f60
+3ef 00007fc0
+3f0 0000d300
+3f1 00007fe0
+3f2 00007fa0
+3f3 AbortDoc 0000cc40
+3f4 AbortPath 00008340
+3f5 00007ec0
+3f6 DwmCreatedBitmapRemotingOutput 00009060
+```
