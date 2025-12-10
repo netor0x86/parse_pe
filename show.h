@@ -20,6 +20,8 @@ public:
     void ShowSection();
     void ShowImportDesc();
     void ShowBaseRelocation();
+    void ShowExportDir();
+    
 private:
     CPE& m_pe;
 };

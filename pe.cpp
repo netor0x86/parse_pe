@@ -37,6 +37,33 @@ PIMAGE_IMPORT_DESCRIPTOR CPE::GetImportDesc()
     }
 }
 
+DWORD CPE::GetImageBase()
+{
+    return m_IsX64 ? m_ImageBase64 : m_ImageBase32;
+}
+
+PIMAGE_EXPORT_DIRECTORY CPE::GetExportDir()
+{
+    if (m_IsX64)
+    {
+        DWORD dwExportDir = m_pImgOptHdr64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
+        if (dwExportDir == 0)
+        {
+            return NULL;
+        }
+        return (PIMAGE_EXPORT_DIRECTORY)(RvaToFa(m_pImgOptHdr64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress) + (byte *)m_lpBase);
+    }
+    else
+    {
+        DWORD dwExportDir = m_pImgOptHdr32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
+        if (dwExportDir == 0)
+        {
+            return NULL;
+        }
+        return (PIMAGE_EXPORT_DIRECTORY)(RvaToFa(m_pImgOptHdr32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress) + (byte *)m_lpBase);
+    }
+}
+
 LPVOID CPE::GetBase()
 {
     return m_lpBase;

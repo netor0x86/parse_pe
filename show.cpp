@@ -1,3 +1,4 @@
+#include <unordered_map>
 #include "show.h"
 
 CShowPe::CShowPe(CPE& pe) : m_pe(pe)
@@ -420,6 +421,7 @@ void CShowPe::ShowBaseRelocation()
     if (pBaseReloc == m_pe.GetBase())
     {
         std::cout << "没有重定位表" << std::endl;
+        return ;
     }
 
     std::cout << std::hex << std::setfill('0');
@@ -443,6 +445,58 @@ void CShowPe::ShowBaseRelocation()
     }
 
     std::cout << std::dec << std::setfill(' ');
+}
+
+void CShowPe::ShowExportDir()
+{
+    std::cout << "IMAGE_EXPORT_DIRECTORY" << std::endl;
+
+    PIMAGE_EXPORT_DIRECTORY pExportDir = m_pe.GetExportDir();
+
+    if (pExportDir == NULL)
+    {
+        std::cout << "没有导出表" << std::endl;
+        return ;
+    }
+
+    std::cout << "\t" << "Name:" << m_pe.RvaToFa(pExportDir->Name) + (byte *)m_pe.GetBase() << std::endl;
+    std::cout << "\t" << "Base:" << pExportDir->Base << std::endl;
+    std::cout << "\t" << "NumberOfFunctions:" << pExportDir->NumberOfFunctions << std::endl;
+    std::cout << "\t" << "NumberOfNames:" << pExportDir->NumberOfNames << std::endl;
+
+    std::unordered_map<WORD, int> wOrdinals;
+
+    WORD *pOrdinal = (WORD *)((byte *)m_pe.GetBase() + m_pe.RvaToFa(pExportDir->AddressOfNameOrdinals));
+    DWORD *pName = (DWORD *)((byte *)m_pe.GetBase() + m_pe.RvaToFa(pExportDir->AddressOfNames));
+    DWORD *pFuncs = (DWORD *)((byte *)m_pe.GetBase() + m_pe.RvaToFa(pExportDir->AddressOfFunctions));
+
+    for (int i = 0; i < pExportDir->NumberOfNames; i ++)
+    {
+        wOrdinals[*pOrdinal] = i;
+        pOrdinal ++;
+    }
+
+    std::cout << std::hex << std::setfill('0');
+
+    for (int i = 0; i < pExportDir->NumberOfFunctions; i ++)
+    {
+        auto it = wOrdinals.find(i);
+        if (it != wOrdinals.end()) {
+            WORD index = it->second;
+            std::cout << i + pExportDir->Base 
+                << " " << (char *)(m_pe.RvaToFa(pName[index]) + (byte *)m_pe.GetBase()) 
+                << " " <<  std::setw(8) << pFuncs[i]
+                << std::endl;
+        }
+        else
+        {
+            std::cout << i + pExportDir->Base 
+                << " " <<  std::setw(8) << pFuncs[i]
+                << std::endl;  
+        }
+    }
+
+    std::cout << std::setfill(' ');
 }
 
 void CShowPe::ShowImportDesc()

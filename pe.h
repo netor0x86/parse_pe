@@ -36,11 +36,14 @@ public:
 
     BOOL IsX64();
 
+    DWORD GetImageBase();
+
     PIMAGE_DOS_HEADER GetDosHdr();
     CNtHdr GetNtHdr();
     PIMAGE_SECTION_HEADER GetSectionHeader();
     PIMAGE_IMPORT_DESCRIPTOR GetImportDesc();
     PIMAGE_BASE_RELOCATION GetBaseRelocation();
+    PIMAGE_EXPORT_DIRECTORY GetExportDir();
 
 public:
     DWORD RvaToFa(DWORD dwRva);

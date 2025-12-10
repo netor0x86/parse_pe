@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
     if (!pe.OpenFile(argv[1]))
     // if (!pe.OpenFile("pe.exe"))
     // if (!pe.OpenFile("x96dbg.exe"))
+    // if (!pe.OpenFile("vulkan-1.dll"))
     {
         std::cout << "OpenFile Error" << std::endl;
         pe.CloseFile();
@@ -32,7 +33,8 @@ int main(int argc, char* argv[])
     show.ShowDosHdr();
     show.ShowNtHdrs();
     show.ShowImportDesc();
-    show.ShowBaseRelocation();
+    // show.ShowBaseRelocation();
+    show.ShowExportDir();
 
     pe.CloseFile();
     return 0;
