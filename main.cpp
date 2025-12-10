@@ -6,9 +6,6 @@ int main(int argc, char* argv[])
     CPE pe;
 
     if (!pe.OpenFile(argv[1]))
-    // if (!pe.OpenFile("pe.exe"))
-    // if (!pe.OpenFile("x96dbg.exe"))
-    // if (!pe.OpenFile("vulkan-1.dll"))
     {
         std::cout << "OpenFile Error" << std::endl;
         pe.CloseFile();
