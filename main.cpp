@@ -30,8 +30,9 @@ int main(int argc, char* argv[])
     show.ShowDosHdr();
     show.ShowNtHdrs();
     show.ShowImportDesc();
-    // show.ShowBaseRelocation();
+    show.ShowBaseRelocation();
     show.ShowExportDir();
+    show.ShowRes();
 
     pe.CloseFile();
     return 0;

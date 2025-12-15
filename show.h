@@ -21,6 +21,10 @@ public:
     void ShowImportDesc();
     void ShowBaseRelocation();
     void ShowExportDir();
+    void ShowRes();
+
+private:
+    void ShowResDir(PIMAGE_RESOURCE_DIRECTORY pRes, PIMAGE_RESOURCE_DIRECTORY pResDir, int iLevel);
     
 private:
     CPE& m_pe;

@@ -44,6 +44,7 @@ public:
     PIMAGE_IMPORT_DESCRIPTOR GetImportDesc();
     PIMAGE_BASE_RELOCATION GetBaseRelocation();
     PIMAGE_EXPORT_DIRECTORY GetExportDir();
+    PIMAGE_RESOURCE_DIRECTORY GetResDir();
 
 public:
     DWORD RvaToFa(DWORD dwRva);

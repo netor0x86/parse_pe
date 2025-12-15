@@ -1,5 +1,6 @@
 #include <unordered_map>
 #include "show.h"
+#include "common.h"
 
 CShowPe::CShowPe(CPE& pe) : m_pe(pe)
 {
@@ -550,4 +551,137 @@ void CShowPe::ShowImportDesc()
         
         pImportDesc ++;
     }    
+}
+
+std::string szResName[] = {
+        "",
+        "Corsor",
+        "Bitmap",
+        "Icon",
+        "Menu",
+        "Dialog",
+        "String",
+        "FontDir",
+        "Font",
+        "Accelerator",
+        "RCDATA",
+        "MessageTable",
+        "GroupCursor",
+        "",
+        "GroupIcon",
+        "",
+        "Version",
+        "DLGINCLUDE",
+        "",
+        "PLUGPLAY",
+        "VXD",
+        "ANICURSOR",
+        "ANIICON"
+        "HTML",
+        "MANIFEST"
+};
+
+/**
+ * 资源相关的结构：
+ *      IMAGE_RESOURCE_DIRECTORY
+ *      IMAGE_RESOURCE_DIRECTORY_ENTRY
+ *      IMAGE_RESOURCE_DATA_ENTRY
+ * 根目录 -> 资源类型 -> 资源ID -> 资源代码页
+ * 根目录、第二层、第三层中的每个目录都是由一个 IMAGE_RESOURCE_DIRECTORY 结构和紧跟其后的数个 IMAGE_RESOURCE_DIRECTORY_ENTRY 结构组成的，两种结构组成一个目录快
+ * 
+ * --------------------------------
+ * id        |   类型  |  
+ * --------------------------------
+ * 100       |   ICON  |  "Test.ico"
+ * 101       |   WAVE  |  "Test.wav"
+ * HelpFile  |   HELP  |  "Test.chm"
+ * 102       |   12345 |  "Test.bin"
+ * 
+ * PIMAGE_RESOURCE_DIRECTORY pRes:    资源的起始地址
+ * PIMAGE_RESOURCE_DIRECTORY pResDir: 当前要遍历的资源目录
+ * iLevel:                            第几层
+ */
+void CShowPe::ShowResDir(PIMAGE_RESOURCE_DIRECTORY pRes, PIMAGE_RESOURCE_DIRECTORY pResDir, int iLevel)
+{
+    int iNumber = pResDir->NumberOfNamedEntries + pResDir->NumberOfIdEntries;
+
+    int iNextLevel = iLevel + 1;
+
+    // 紧跟资源目录结构的就是资源目录入口
+    PIMAGE_RESOURCE_DIRECTORY_ENTRY pResEntry = (PIMAGE_RESOURCE_DIRECTORY_ENTRY)(pResDir + 1);
+    for (int i = 0; i < iNumber; i ++)
+    {
+        // 第一层和第二层都是目录
+        if (pResEntry->DataIsDirectory)
+        {
+            PIMAGE_RESOURCE_DIRECTORY pNextResDir = (PIMAGE_RESOURCE_DIRECTORY)((char *)pRes + pResEntry->OffsetToDirectory);
+
+            if (iLevel == 1)
+            {
+                std::cout << i + 1 << ".";
+
+                if(pResEntry->NameIsString)
+                {
+                    PIMAGE_RESOURCE_DIR_STRING_U pDirStr = (PIMAGE_RESOURCE_DIR_STRING_U)((char *)pRes + pResEntry->NameOffset);
+                    std::cout << "资源类型字符串:" << wstring_to_utf8(pDirStr->NameString) << std::endl;
+                }
+                else
+                {
+                    if (pResEntry->Id <= 24)
+                    {
+                        std::cout << "资源类型:" << pResEntry->Id << ", " << szResName[pResEntry->Id] << std::endl;
+                    }
+                    else
+                    {
+                        std::cout << "自定义资源类型:" << pResEntry->Id << std::endl;
+                    }
+                }
+            }
+            else if(iLevel == 2)
+            {
+                std::cout << "  " << i + 1 << "." ;
+
+                if (pResEntry->NameIsString)
+                {
+                    PIMAGE_RESOURCE_DIR_STRING_U pDirStr = (PIMAGE_RESOURCE_DIR_STRING_U)((char *)pRes + pResEntry->NameOffset);
+                    std::cout << "资源字符串:" << wstring_to_utf8(pDirStr->NameString) << std::endl;
+                }
+                else
+                {
+                    std::cout << "自定义资源ID:" << pResEntry->Id << std::endl;
+                }
+            }
+
+            ShowResDir(pRes, pNextResDir, iNextLevel);
+        }
+        else
+        {
+            PIMAGE_RESOURCE_DATA_ENTRY pResDataEntry = (PIMAGE_RESOURCE_DATA_ENTRY)((char *)pRes + pResEntry->OffsetToData);
+            std::cout << "     " << i + 1 << "."
+                      << "资源ID:" << pResEntry->Id
+                      << ",代码页:" << pResEntry->Name
+                      << std::hex << std::setfill('0') 
+                      << ",文件偏移:" << m_pe.RvaToFa(pResDataEntry->OffsetToData)
+                      << ",长度（字节）:" << pResDataEntry->Size
+                      << std::dec << std::setfill(' ')
+                      << std::endl;
+        }
+
+        pResEntry ++;
+    }
+}
+
+void CShowPe::ShowRes()
+{
+    std::cout << "IMAGE_RESOURCE_DIRECTORY" << std::endl;
+
+    PIMAGE_RESOURCE_DIRECTORY pResDir = m_pe.GetResDir();
+
+    if (pResDir == NULL)
+    {
+        std::cout << "没有资源表" << std::endl;
+        return ;
+    }
+
+    ShowResDir(pResDir, pResDir, 1);
 }

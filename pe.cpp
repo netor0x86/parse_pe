@@ -42,6 +42,28 @@ DWORD CPE::GetImageBase()
     return m_IsX64 ? m_ImageBase64 : m_ImageBase32;
 }
 
+PIMAGE_RESOURCE_DIRECTORY CPE::GetResDir()
+{
+    if (m_IsX64)
+    {
+        DWORD dwResDir = m_pImgOptHdr64->DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress;
+        if (dwResDir == 0)
+        {
+            return NULL;
+        }
+        return (PIMAGE_RESOURCE_DIRECTORY)(RvaToFa(m_pImgOptHdr64->DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress) + (byte *)m_lpBase);
+    }
+    else
+    {
+        DWORD dwResDir = m_pImgOptHdr32->DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress;
+        if (dwResDir == 0)
+        {
+            return NULL;
+        }
+        return (PIMAGE_RESOURCE_DIRECTORY)(RvaToFa(m_pImgOptHdr32->DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress) + (byte *)m_lpBase);
+    }
+}
+
 PIMAGE_EXPORT_DIRECTORY CPE::GetExportDir()
 {
     if (m_IsX64)
