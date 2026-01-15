@@ -86,6 +86,18 @@ PIMAGE_EXPORT_DIRECTORY CPE::GetExportDir()
     }
 }
 
+IMAGE_DATA_DIRECTORY CPE::GetDataDir(int Dir)
+{
+    if (m_IsX64)
+    {
+        return m_pImgOptHdr64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+    }
+    else
+    {
+        return m_pImgOptHdr32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+    }
+}
+
 LPVOID CPE::GetBase()
 {
     return m_lpBase;

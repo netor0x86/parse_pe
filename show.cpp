@@ -460,6 +460,8 @@ void CShowPe::ShowExportDir()
         return ;
     }
 
+    IMAGE_DATA_DIRECTORY DataDir = m_pe.GetDataDir(IMAGE_DIRECTORY_ENTRY_EXPORT);
+
     std::cout << "\t" << "Name:" << m_pe.RvaToFa(pExportDir->Name) + (byte *)m_pe.GetBase() << std::endl;
     std::cout << "\t" << "Base:" << pExportDir->Base << std::endl;
     std::cout << "\t" << "NumberOfFunctions:" << pExportDir->NumberOfFunctions << std::endl;
@@ -486,8 +488,11 @@ void CShowPe::ShowExportDir()
             WORD index = it->second;
             std::cout << i + pExportDir->Base 
                 << " " << (char *)(m_pe.RvaToFa(pName[index]) + (byte *)m_pe.GetBase()) 
-                << " " <<  std::setw(8) << pFuncs[i]
-                << std::endl;
+                << " " <<  std::setw(8) << pFuncs[i];
+            if (pFuncs[i] >= DataDir.VirtualAddress && pFuncs[i] <= DataDir.VirtualAddress + DataDir.Size) {
+                std::cout << " => " << (char *)(m_pe.RvaToFa(pFuncs[i]) + (byte *)m_pe.GetBase());
+            }
+            std::cout << std::endl;
         }
         else
         {

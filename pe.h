@@ -46,6 +46,8 @@ public:
     PIMAGE_EXPORT_DIRECTORY GetExportDir();
     PIMAGE_RESOURCE_DIRECTORY GetResDir();
 
+    IMAGE_DATA_DIRECTORY GetDataDir(int Dir);
+
 public:
     DWORD RvaToFa(DWORD dwRva);
     DWORD FaToRva(DWORD dwFa);
