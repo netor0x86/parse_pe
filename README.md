@@ -359,6 +359,13 @@ IMAGE_EXPORT_DIRECTORY
 3f5 00007ec0
 3f6 DwmCreatedBitmapRemotingOutput 00009060
 ```
+导出表中的中转函数
+```
+5f0 WaitForThreadpoolIoCallbacks 000aa90c => NTDLL.TpWaitForIoCompletion
+5f1 WaitForThreadpoolTimerCallbacks 000aa948 => NTDLL.TpWaitForTimer
+5f2 WaitForThreadpoolWaitCallbacks 000aa97c => NTDLL.TpWaitForWait
+5f3 WaitForThreadpoolWorkCallbacks 000aa9af => NTDLL.TpWaitForWork
+```
 
 ### 8.资源表
 
