@@ -329,7 +329,15 @@ void CShowPe::ShowSection()
 
     while (wSecNum > 0)
     {
-        std::cout << "\t" << "Name:" << pSecHdr->Name << std::endl;
+        if (pSecHdr->Name[0] != '/') 
+        {
+            std::cout << "\t" << "Name:" << pSecHdr->Name << std::endl;
+        } 
+        else 
+        {
+            DWORD dwIndex = atoi((const char *)pSecHdr->Name + 1);
+            std::cout << "\t" << "Name:(" << pSecHdr->Name << ")" << m_pe.GetStringFromStringTableSafe(dwIndex) << std::endl;
+        }        
 
         std::cout << "\t\t" << "VirtualSize:" << std::setw(8) << pSecHdr->Misc.VirtualSize << "  "
                   << "VirtualAddress:" << std::setw(8) << pSecHdr->VirtualAddress << "  "

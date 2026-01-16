@@ -55,7 +55,12 @@ public:
 public:
     LPVOID GetBase();
 
+public:
+    const char *GetStringFromStringTableSafe(DWORD dwIndex);
+    
 private:
+    const char *m_StringTable;
+
     std::string m_StrFileName;
 
     BOOL m_IsX64;

@@ -158,6 +158,41 @@ PIMAGE_SECTION_HEADER CPE::GetSectionHeader()
     return m_pImgSecHdr;
 }
 
+const char * CPE::GetStringFromStringTableSafe(DWORD dwIndex)
+{
+    if (!m_StringTable || dwIndex == 0)
+    {
+        return nullptr;
+    }
+
+    DWORD dwTotalSize = *(DWORD*)m_StringTable;
+    if (dwTotalSize < 4)
+    {
+        return nullptr;
+    }
+
+    if (dwIndex >= dwTotalSize)
+    {
+        return nullptr;
+    }
+
+    const char * str = (const char *)(m_StringTable + dwIndex);
+    const char * end = (const char *)(m_StringTable + dwTotalSize);
+    const char * p = str;
+
+    while (p < end && *p != '\0')
+    {
+        p ++;
+    }
+
+    if (p >= end)
+    {
+        return nullptr;
+    }
+
+    return str;
+}
+
 VOID CPE::GetImgHdr()
 {
     m_pImgFileHdr = (PIMAGE_FILE_HEADER)(&m_pImgNtHdr32->FileHeader);
@@ -169,6 +204,23 @@ VOID CPE::GetImgHdr()
     else if (m_pImgNtHdr32->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC)
     {
         m_IsX64 = TRUE;
+    }
+
+    // 定位字符串表
+    if (m_pImgFileHdr->PointerToSymbolTable != 0 && m_pImgFileHdr->NumberOfSymbols > 0)
+    {
+        PIMAGE_SYMBOL pSymbolTable = (PIMAGE_SYMBOL)((char *)m_lpBase + m_pImgFileHdr->PointerToSymbolTable);
+
+        // 符号表大小
+        DWORD dwSymbolTableSize = m_pImgFileHdr->NumberOfSymbols * sizeof(IMAGE_SYMBOL);
+        // 字符串表在符号表之后
+        m_StringTable = (char*)m_lpBase + m_pImgFileHdr->PointerToSymbolTable + dwSymbolTableSize;
+
+        // 验证字符串表大小
+        if (*(DWORD*)m_StringTable < 4)
+        {
+            m_StringTable = nullptr;
+        }
     }
 
     if (m_IsX64)
