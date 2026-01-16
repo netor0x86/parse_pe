@@ -81,7 +81,6 @@ IMAGE_OPTIONAL_HEADER
 ```
 
 ### 3.节表：
-这里需要处理 / 开头的节，暂时没有处理
 ```
 IMAGE_SECTION_HEADER
         Name:.text
@@ -154,6 +153,41 @@ IMAGE_SECTION_HEADER
                 Characteristics:42000040
         Name:/107
                 VirtualSize:0000068d  VirtualAddress:0005b000  SizeOfRawData:00000800  PointerToRawData:00050a00
+                PointerToRelocations:00000000  PointerToLinenumbers:00000000  NumberOfRelocations:00000000  NumberOfLinenumbers:00000000
+                Characteristics:42000040
+```
+处理节表中以 / 开头的节名称
+```
+        Name:(/14).debug_aranges
+                VirtualSize:00001350  VirtualAddress:00017000  SizeOfRawData:00001400  PointerToRawData:00010e00
+                PointerToRelocations:00000000  PointerToLinenumbers:00000000  NumberOfRelocations:00000000  NumberOfLinenumbers:00000000
+                Characteristics:42000040
+        Name:(/29).debug_info
+                VirtualSize:0005b96c  VirtualAddress:00019000  SizeOfRawData:0005ba00  PointerToRawData:00012200
+                PointerToRelocations:00000000  PointerToLinenumbers:00000000  NumberOfRelocations:00000000  NumberOfLinenumbers:00000000
+                Characteristics:42000040
+        Name:(/41).debug_abbrev
+                VirtualSize:00002f61  VirtualAddress:00075000  SizeOfRawData:00003000  PointerToRawData:0006dc00
+                PointerToRelocations:00000000  PointerToLinenumbers:00000000  NumberOfRelocations:00000000  NumberOfLinenumbers:00000000
+                Characteristics:42000040
+        Name:(/55).debug_line
+                VirtualSize:00006198  VirtualAddress:00078000  SizeOfRawData:00006200  PointerToRawData:00070c00
+                PointerToRelocations:00000000  PointerToLinenumbers:00000000  NumberOfRelocations:00000000  NumberOfLinenumbers:00000000
+                Characteristics:42000040
+        Name:(/67).debug_frame
+                VirtualSize:000039a8  VirtualAddress:0007f000  SizeOfRawData:00003a00  PointerToRawData:00076e00
+                PointerToRelocations:00000000  PointerToLinenumbers:00000000  NumberOfRelocations:00000000  NumberOfLinenumbers:00000000
+                Characteristics:42000040
+        Name:(/80).debug_str
+                VirtualSize:00002157  VirtualAddress:00083000  SizeOfRawData:00002200  PointerToRawData:0007a800
+                PointerToRelocations:00000000  PointerToLinenumbers:00000000  NumberOfRelocations:00000000  NumberOfLinenumbers:00000000
+                Characteristics:42000040
+        Name:(/91).debug_line_str
+                VirtualSize:00001238  VirtualAddress:00086000  SizeOfRawData:00001400  PointerToRawData:0007ca00
+                PointerToRelocations:00000000  PointerToLinenumbers:00000000  NumberOfRelocations:00000000  NumberOfLinenumbers:00000000
+                Characteristics:42000040
+        Name:(/107).debug_rnglists
+                VirtualSize:00000c7a  VirtualAddress:00088000  SizeOfRawData:00000e00  PointerToRawData:0007de00
                 PointerToRelocations:00000000  PointerToLinenumbers:00000000  NumberOfRelocations:00000000  NumberOfLinenumbers:00000000
                 Characteristics:42000040
 ```
