@@ -491,6 +491,12 @@ void CShowPe::ShowExportDir()
 
     for (int i = 0; i < pExportDir->NumberOfFunctions; i ++)
     {
+        if (pFuncs[i] == 0)
+        {
+            std::cout << "-" << std::endl;
+            continue;
+        }
+
         auto it = wOrdinals.find(i);
         if (it != wOrdinals.end()) {
             WORD index = it->second;
